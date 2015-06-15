@@ -13,13 +13,28 @@ require statements in the module, allowing:
 * *Filtering*: Filtering which modules to load from a directory by file path;
 * *API Result*: Properly return the response as an API.
 
+API
+====
+
+```js
+  var loadedModules = [{
+    filePath: "The full path to the loaded file.",
+    module: "The instance of the loaded module. If an error occurs, it is undefined",
+    error: "The instance of the Error captured while loading the module."
+  }];
+```
+
+* Use the `filePath` to refer to the file loaded.
+* When defined, the `module` is what was loaded.
+* Re-throw the `error` if you need to report the errors of the collection.
+
 Use
 ======
 
 Loading multiple modules with a given interface, without requiring all the modules from the
 given directory manually. Considering the directory is as follows:
 
-```
+```sh
 $ tree tasks
 ./tasks/
 ├── checkdeps
@@ -49,7 +64,17 @@ The following example loads all the `_tasks.js` files, but not the `xml-todos-se
   // Setup each task
   var Tasks = dirquire(dir, filters);
   Tasks.forEach(function(Task) {
-    new Task().setup();
+    // Verifying the module
+    console.log("Verifying the task at " + Task.filePath);
+
+    if (Task.error) {
+      // Report the error for instance
+      console.log("ERROR: " + Task.error.message);
+
+    } else {
+      // Execute the module
+      new Task.module().setup();
+    }
   });
 ```
 
