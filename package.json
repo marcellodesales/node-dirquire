@@ -1,10 +1,10 @@
 {
-  "name": "requiredir",
+  "name": "require-d",
   "version": "1.0.0",
-  "description": "Load multiple modules from a given directory with filtering capabilities, decreasing the number of manually-loaded modules.",
+  "description": "Load multiple modules from a given directory with filtering capabilities and exception handling decreasing the number of manually-loaded modules.",
   "main": "lib/index.js",
   "scripts": {
-    "test": "gulp"
+    "test": ""
   },
   "keywords": [
     "iterator",
@@ -14,11 +14,12 @@
     "filter",
     "load-multiple",
     "load-modules",
-    "design-pattern"
+    "design-pattern",
+    "require-dir"
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/marcellodesales/node-requiredir.git"
+    "url": "https://github.com/marcellodesales/node-require-d.git"
   },
   "bugs": {
     "url": "https://github.com/marcellodesales/node-requiredir/issues"
@@ -28,8 +29,5 @@
     "email": "marcello.desales@gmail.com",
     "url": "https://github.com/marcellodesales"
   },
-  "license": "MIT",
-  "devDependencies": {
-    "gulp": "~3.9.0"
-  }
+  "license": "MIT"
 }
