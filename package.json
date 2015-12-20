@@ -1,5 +1,5 @@
 {
-  "name": "require-d",
+  "name": "direquire",
   "version": "1.0.0",
   "description": "Load multiple modules from a given directory with filtering capabilities and exception handling decreasing the number of manually-loaded modules.",
   "main": "lib/index.js",
@@ -19,7 +19,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/marcellodesales/node-require-d.git"
+    "url": "https://github.com/marcellodesales/node-direquire.git"
   },
   "bugs": {
     "url": "https://github.com/marcellodesales/node-requiredir/issues"
