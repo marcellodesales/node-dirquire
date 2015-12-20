@@ -4,7 +4,9 @@
   "description": "Load multiple modules from a given directory with filtering capabilities and exception handling decreasing the number of manually-loaded modules.",
   "main": "lib/index.js",
   "scripts": {
-    "test": ""
+    "pretest": "rm -rf coverage/ && jshint --reporter=node_modules/jshint-stylish lib/*.js test/*.js && ./node_modules/jscs/bin/jscs lib test",
+    "test": "istanbul cover ./node_modules/mocha/bin/_mocha --report cobertura --report text --report html --report lcov -- -R spec",
+    "posttest": "node ./lib/cli.js -f -v && cat ./coverage/lcov.info | ./node_modules/.bin/codacy-coverage && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
   },
   "keywords": [
     "iterator",
@@ -29,5 +31,16 @@
     "email": "marcello.desales@gmail.com",
     "url": "https://github.com/marcellodesales"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "chai": "^3.2.0",
+    "codacy-coverage": "1.1.2",
+    "coveralls": "2.11.3",
+    "istanbul": "^0.4.1",
+    "jscs": "~2.6.0",
+    "jshint": "^2.5.0",
+    "jshint-stylish": "^2.0.1",
+    "mocha": "^2.2.5",
+    "mocha-lcov-reporter": "^1.0.0"
+  }
 }
