@@ -12,7 +12,7 @@ describe("dirquire", function() {
     it("should load all modules in a dir and return the array", function(done) {
 
       // Use the fixture that's without problems
-      var dir = path.resolve(__dirname, "fixtures", "all-modules-correct");
+      var dir = path.resolve("fixtures", "all-modules-correct");
       dirquire(dir).forEach(function modulesIterator(dirApi) {
         expect(dirApi.filePath).to.not.be.null;
         expect(dirApi.fileName).to.not.be.null;

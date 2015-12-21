@@ -1,3 +1,5 @@
+// jscs:disable
+
 "use strict";
 
 /**
