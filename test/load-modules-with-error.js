@@ -7,9 +7,9 @@ var dirquire = require("../lib");
 
 describe("dirquire", function() {
 
-  describe("Loading proper directory", function() {
+  describe("Modules with errors", function() {
 
-    it("should load all modules in a dir and return the array", function(done) {
+    it("should NOT load modules and return error in the elements", function(done) {
 
       // Use the fixture that's without problems
       var dir = path.resolve("fixtures", "modules-with-error");
@@ -18,8 +18,10 @@ describe("dirquire", function() {
         expect(dirApi.fileName).to.not.be.null;
         expect(dirApi.error).to.be.an("Error");
 
+        console.log(dirApi);
+
         // the module should not be defined
-        expect(dirApi.module).to.not.be.undefined;
+        expect(dirApi.module).to.be.undefined;
       });
 
       done();

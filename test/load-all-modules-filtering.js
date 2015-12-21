@@ -7,15 +7,22 @@ var dirquire = require("../lib");
 
 describe("dirquire", function() {
 
-  describe("Loading proper directory", function() {
+  describe("Loading proper directory with FILTER", function() {
 
-    it("should load all modules in a dir and return the array", function(done) {
+    it("should load all modules WITH FILTER in a dir and return the array", function(done) {
 
       // Use the fixture that's without problems
       var dir = path.resolve("fixtures", "all-modules-correct");
       var filter = { extension: "cure"};
 
-      dirquire(dir, filter).forEach(function modulesIterator(dirApi) {
+      // Only one file is loaded, the secure.js
+      var modules = dirquire(dir, filter);
+
+      console.log(modules);
+
+      expect(modules.length).to.equal(1);
+
+      modules.forEach(function modulesIterator(dirApi) {
         expect(dirApi.filePath).to.not.be.null;
         expect(dirApi.fileName).to.not.be.null;
         expect(dirApi.module).to.not.be.null;

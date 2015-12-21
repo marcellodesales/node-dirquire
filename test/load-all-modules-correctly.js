@@ -19,6 +19,8 @@ describe("dirquire", function() {
         expect(dirApi.module).to.not.be.null;
       });
 
+      console.log(dirquire(dir));
+
       done();
 
     });
