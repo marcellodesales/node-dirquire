@@ -1,10 +1,8 @@
-dirquire
-=====================
+# dirquire
 
 ![Built With](http://img.shields.io/badge/built_with-Gulp-brightgreen.svg)
 
-Features
-======
+# Features
 
 Helps loading multiple modules from a given directory, avoiding multiple manual
 require statements in the module, allowing:
@@ -13,23 +11,71 @@ require statements in the module, allowing:
 * *Filtering*: Filtering which modules to load from a directory by file path;
 * *API Result*: Properly return the response as an API.
 
-API
-====
+# API
+
+## require("dirquire")(dir, [filters]): array
+
+* *dir*: a valid path to a directory according to `fs.statSync(path).isDirectory()`.
+* *filters.extension*: optional parameter to filter file names.
+* *filters.depth*: loads files in a given depth.
+
+Loads all the files of a given
 
 ```js
-  var loadedModules = [{
+  var loadedModules = require("dirquire")(dir, [filters]);
+```
+
+The result is an arry of the following api:
+
+```js
+  [{
+    fileName: "The name of the file without the path.",
     filePath: "The full path to the loaded file.",
     module: "The instance of the loaded module. If an error occurs, it is undefined",
     error: "The instance of the Error captured while loading the module."
   }];
 ```
 
-* Use the `filePath` to refer to the file loaded.
-* When defined, the `module` is what was loaded.
-* Re-throw the `error` if you need to report the errors of the collection.
+Take a look at the `fixtures` directory.
 
-Use
-======
+## Example: Load modules without errors
+
+Using the node cli, you can run the following fixtures used by the test cases.
+
+```js
+$ node
+> require("dirquire")("fixtures/all-modules-correct")
+[ { fileName: 'hello.js',
+    filePath: '/home/mdesales/dev/github/marcellodesales/node-dirquire/fixtures/all-modules-correct/hello.js',
+    module: 
+     { endpoint: '/hello',
+       contentType: 'text/plain',
+       init: [Function: decorate] } },
+  { fileName: 'secure.js',
+    filePath: '/home/mdesales/dev/github/marcellodesales/node-dirquire/fixtures/all-modules-correct/secure.js',
+    module: 
+     { endpoint: '/secure',
+       contentType: 'text/plain',
+       init: [Function: decorate] } } ]
+```
+
+## Example: Load modules with errors
+
+* Files with syntax errors are not loaded.
+* Files that requires a module that is not located in the `node_modules`.
+
+```js
+$ node
+> require("dirquire")("fixtures/modules-with-error")
+[ { fileName: 'illegal-token.js',
+    filePath: '/home/mdesales/dev/github/marcellodesales/node-dirquire/fixtures/modules-with-error/illegal-token.js',
+    error: [Error: Cannot load the module /home/mdesales/dev/github/marcellodesales/node-dirquire/fixtures/modules-with-error/illegal-token.js: Unexpected token ILLEGAL] },
+  { fileName: 'module-requiring-non-existent-module.js',
+    filePath: '/home/mdesales/dev/github/marcellodesales/node-dirquire/fixtures/modules-with-error/module-requiring-non-existent-module.js',
+    error: [Error: Cannot load the module /home/mdesales/dev/github/marcellodesales/node-dirquire/fixtures/modules-with-error/module-requiring-non-existent-module.js: Cannot find module 'passport-restify'] } ]
+```
+
+# Use
 
 Loading multiple modules with a given interface, without requiring all the modules from the
 given directory manually. Considering the directory is as follows:
@@ -50,7 +96,7 @@ $ tree tasks
     └── versioning_tasks.js
 ```
 
-The following example loads all the `_tasks.js` files, but not the `xml-todos-serializer.js`.
+The following example loads all the `_tasks.js` files, but not the `xml-todos-serializer.js`. The `depth` filter helps navigating to directories that contains more than modules required to be loaded.
 
 ```js
   var loadModules = require("dirquire");
@@ -64,12 +110,12 @@ The following example loads all the `_tasks.js` files, but not the `xml-todos-se
   // Setup each task
   var Tasks = dirquire(dir, filters);
   Tasks.forEach(function(Task) {
-    // Verifying the module
-    console.log("Verifying the task at " + Task.filePath);
+    // Report that the task was loaded...
+    log.info("Verifying the task at " + Task.filePath);
 
     if (Task.error) {
-      // Report the error for instance
-      console.log("ERROR: " + Task.error.message);
+      // Report the error for instance...
+      log.error(Task.error.message);
 
     } else {
       // Execute the module
@@ -79,10 +125,9 @@ The following example loads all the `_tasks.js` files, but not the `xml-todos-se
 ```
 
 The only observation is that all the returned objects must implement the same interface. In the case above,
-all the tasks are classes with the method `setup()`.
+all the tasks are classes with the method `setup()`. That is a good application of the `Visitor` and `Iterator` Design-Patterns. 
 
-Contributing
-========
+# Contributing
 
 We use the GitFlow branching mechanics, http://nvie.com/posts/a-successful-git-branching-model/.
 
