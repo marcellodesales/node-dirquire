@@ -1,5 +1,5 @@
 {
-  "name": "direquire",
+  "name": "dirquire",
   "version": "1.0.0",
   "description": "Load multiple modules from a given directory with filtering capabilities and exception handling decreasing the number of manually-loaded modules.",
   "main": "lib/index.js",
