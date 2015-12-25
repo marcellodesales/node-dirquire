@@ -79,6 +79,96 @@ $ node
 
 # Use
 
+## Simple Load
+
+Loading multiple modules with a given interface, without requiring all the modules from the
+given directory manually. Considering the routes directory containing `restify` or `express` routes:
+
+```sh
+$ tree my-app/routes/
+my-app/routes/
+├── hello.js
+└── secure.js
+```
+
+Each route file implements the following interfaces: `endpoint`, `contentType`, and the function `init()`.
+
+```js
+"use strict";
+
+// Loads ANY logger under APP_DIR/middleware/logger
+var logger = require("middleware-js").instance().load("middleware/logger");
+
+/**
+ * The endpoint to be used.
+ */
+module.exports.endpoint = "/hello";
+/**
+ * The content type produced by this handler.
+ */
+module.exports.contentType = "text/plain";
+/**
+ * Decorates the server with a new route
+ */
+module.exports.init = decorate;
+
+/**
+ * Decorates the server instance with a simple hello
+ */
+function decorate(server) {
+  logger.debug("Ready to annotate with the " + module.exports.endpoint + " route");
+
+  // Annotate the server with a GET endpoint
+  // ATTENTION: YOU ARE REQUIRED TO CALL NEXT FOR RESTIFY TO CALL THE NEXT IN THE CHAIN!
+  // https://gist.github.com/LeCoupa/0664e885fd74152d1f90#file-1-restify-server-cheatsheet-js-L131-L146
+  server.get(module.exports.endpoint, function getHelloServerHandler(req, res, next) {
+
+    //console.log(logger === req.log); THIS IS TRUE. RESTIFY HAS AN INSTANCE OF THE LOGGER UNDER REQ
+    req.log.debug("Finished fulfilling request for " + module.exports.endpoint);
+
+    res.header("Content-Type", module.exports.contentType);
+    res.send("Hello... Be Intuitive!");
+
+    next();
+  });
+}
+```
+
+The following example loads all the routes with `dirquire`. 
+
+* We can skip those routes that were not properly loaded;
+* Continue loading those that were properly loaded without application disruption;
+* Differently than other libraries such as `require-dir`, `dirquire` allows you to implement enterprise-gradle frameworks.
+
+```js
+  // Load the private routes not exposed
+  var _this = this;
+  var privateRoutes = [];
+
+  var routes = require("dirquire")(__dirname + "/routes");
+  routes.forEach(function(route) {
+    if (route.error) { // problems loading the route does not prevent the application to be loaded.
+      logger.error(route.error, "Error while loading the route");
+      return; // continues the loop
+    }
+
+    logger.debug("Inializing route " + route.module.endpoint);
+
+    // Call the route's "init" method... Note that the "module" is the reference of loaded module.
+    route.module.init(_this.server);
+
+    // Collecting the private routes$
+    privateRoutes.push({
+      endpoint: route.module.endpoint,
+      contentType: route.module.contentType
+    });
+  });
+
+  logger.info(privateRoutes, "Loaded private routes");
+```
+
+## Load with Filters and Directory Depth
+
 Loading multiple modules with a given interface, without requiring all the modules from the
 given directory manually. Considering the directory is as follows:
 
